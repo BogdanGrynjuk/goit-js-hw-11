@@ -25,7 +25,7 @@ hideBtn();
 async function onSearch(event) {
   event.preventDefault();
 
-  pixabayApiService.query = event.currentTarget.elements.searchQuery.value;
+  pixabayApiService.query = event.currentTarget.elements.searchQuery.value.trim();
 
   if (pixabayApiService.query === '') {   
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');        
@@ -39,9 +39,7 @@ async function onSearch(event) {
   
   try {
     const responce = await pixabayApiService.fetchPhotoCards()
-      .then(createNewGallery)
-      .then(smoothScrolling);  
-    
+      .then(createNewGallery)    
   } catch (error) {
     console.log(error);
   }  
@@ -151,10 +149,12 @@ function onGalleryClick(event) {
 }
 
 function smoothScrolling() {
-  const domRect = document.querySelector(".load-more").getBoundingClientRect();          
+  const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
 
-  window.scrollBy({        
-    top: domRect.top,
-    behavior: "smooth",
-  });
+window.scrollBy({
+  top: cardHeight * 3,
+  behavior: "smooth",
+});
 }
